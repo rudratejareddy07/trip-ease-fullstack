@@ -1,0 +1,24 @@
+<% layout("/layouts/boilerplate.ejs") %>
+<div class="content-wrapper">
+    <h3 class="text-center mb-4">Property Details</h3>
+    <div class="card showcard">
+        <img src="<%=listing.image %>" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title"><%=listing.title %></h5>
+            <ul>
+                <li class="card-text"><%=listing.title %></li>
+                <li><%=listing.description %></li>
+                <li>&#8377;<%=listing.priceFormatted %></li>
+                <li><%=listing.location %></li>
+                <li><%=listing.country %></li>
+            </ul>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/listings/<%=listing._id%>/edit" class="btn btn-primary">Edit Listing</a>
+                <form method="post" action="/listings/<%=listing._id%>?_method=DELETE" style="display: inline-block;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
