@@ -36,7 +36,7 @@ body {
 }
 .card{
     
-    height: 24.5rem !important;
+    height: 23.5rem !important;
     border: none !important;
 }
 .card-img-top{
@@ -45,7 +45,7 @@ body {
 
 }
 .card-body{
-    padding: 0 !important;
+    padding: 0rem 1rem 1rem 1rem !important;
     /* padding-top: 1rem !important; */
 }
 .listing-title{
@@ -81,9 +81,10 @@ body {
 /* Add this new class for the content wrapper */
 .content-wrapper {
     width: 100%;
-    max-width: 800px;
+    max-width: 500px;
     margin: 0 auto;
     padding: 0 1rem;
+    
 }
 
 /* Update showcard to not have fixed max-width */
@@ -94,6 +95,7 @@ body {
     border-radius: 1rem;
     overflow: hidden;
     margin-bottom: 2rem;
+    
 }
 
 /* Ensure footer stays at bottom */
@@ -113,4 +115,8 @@ body {
 }
 .social{
     margin-right: 1rem;
+}
+.btns{
+    display: flex !important;
+    justify-content: center !important;
 }
