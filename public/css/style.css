@@ -29,14 +29,22 @@ body {
     font-weight: 400 !important;
     font-size: larger;
 }
+/* .newReview{
+   border
+}  */
 
 
 .card-body{
     text-decoration: none !important;
 }
-.card{
-    
-    height: 23.5rem !important;
+.listing-card{
+    border-radius: 2rem  !important;
+    /* height: 23.5rem !important; */
+    border: none !important;
+}
+.listing-card img{
+    border-radius: 1rem  !important;
+    /* height: 23.5rem !important; */
     border: none !important;
 }
 .card-img-top{
@@ -44,8 +52,17 @@ body {
     height: 20rem !important;
 
 }
-.card-body{
+.card-img-top-index{
+    border-radius: 0.7rem;
+    height: 20rem !important;
+
+}
+.card-body-index{
     padding: 0rem 1rem 1rem 1rem !important;
+    /* padding-top: 1rem !important; */
+}
+.card-body{
+    padding: 1rem 1rem 1rem 1rem !important;
     /* padding-top: 1rem !important; */
 }
 .listing-title{
@@ -81,7 +98,7 @@ body {
 /* Add this new class for the content wrapper */
 .content-wrapper {
     width: 100%;
-    max-width: 500px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 0 1rem;
     
@@ -119,4 +136,15 @@ body {
 .btns{
     display: flex !important;
     justify-content: center !important;
+}
+.card{
+    border: #222222 !important ;
+}
+.newReview {
+    border: 1px solid #ccc !important;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    background-color: white;
+    margin-left: 1rem;
 }
