@@ -29,11 +29,11 @@ router.post("/",reviewValidate,wrapAsync(async(req,res)=>{
     res.redirect(`/listings/${listing._id}`)
 }))
 //review deletion
-router.delete("/listings/:id/reviews/:reviewId",async(req,res)=>{
+router.delete("/:reviewId",wrapAsync(async(req,res)=>{
     const{id,reviewId}=req.params;
     await Listing.findByIdAndUpdate(id, { $pull: { review: reviewId } });
     await Review.findByIdAndDelete(reviewId);
      res.redirect(`/listings/${id}`);
-})
+}))
 
 module.exports=router;
