@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const methodOverride = require("method-override");
-const ejsMate = require("ejs-mate");
+const ejsMate = require("ejs-mate");//layout engine for EJS .Ex: using => <% %>
 const wrapAsync = require("./util/wrapAsync.js");
 const ExpressError = require("./util/ExpressError.js");
 const { listingSchema } = require("./schema.js");
@@ -11,9 +11,27 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const flash = require("connect-flash");
 
+const LocalStrategy=require("passport-local");
+const User=require("./models/users.js");
+//express session
+app.use(
+    session({
+        secret:"mysupersecretstring",
+        resave:false,
+        saveUninitialized:true,
+        cookie:{
+          expires:Date.now() + 7*24*60*60*1000,
+          maxAge:7*24*60*60*1000,
+          httpOnly:true,
+        }
+    })
+);
+app.use(flash());
+
 // Mounting routes
 const listingRoutes = require("./routes/listing.js");
 const reviewRoutes = require("./routes/review.js"); // ✅ include this
+const passport = require("passport");
 
 // MongoDB connection
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -41,6 +59,14 @@ app.use(
   })
 );
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authnticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");

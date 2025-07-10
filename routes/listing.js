@@ -15,7 +15,7 @@ const listingValidate=(req,res,next)=>{
     const {error}=listingSchema.validate(req.body);
     if(error){
         let errMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(402,result.error);
+        throw new ExpressError(402,errMsg);
     }else{
         next();
     }
@@ -74,19 +74,20 @@ router.delete("/:id",wrapAsync(async(req,res)=>{
     
 
 }))
-
-router.post("/listings",wrapAsync(async(req,res,next)=>{
+//new listing
+router.post("/",wrapAsync(async(req,res,next)=>{
+    console.log("BODY RECEIVED:", req.body);
     if(!req.body.listing){
         throw new ExpressError(400,"bad request");  //hopscotch-postreq-/listings ;similar thing can be dodne at update listing where req.body used
     }
     
-    const {title,description,image,price,country,location}=req.body;
+    const {title,description,image,price,country,location}=req.body.listing;
     const newListing=new Listing({
         title,description,image,price,country,location
     })
     console.log(newListing);
     await newListing.save();
-
+    req.flash("success","new listing created");
    res.redirect("/listings");
 
 }))
