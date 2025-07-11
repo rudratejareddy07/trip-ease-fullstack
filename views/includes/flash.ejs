@@ -1,0 +1,16 @@
+<% if (success && success.length > 0) { %>
+  <div class="d-flex justify-content-center mt-3">
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="max-width: 500px; width: 100%; text-align: left;">
+      <%= success %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+<% } %>
+<% if (error && error.length > 0) { %>
+  <div class="d-flex justify-content-center mt-3">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="max-width: 500px; width: 100%; text-align: left;">
+      <%= error %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+<% } %>

@@ -6,6 +6,7 @@ const wrapAsync=require("../util/wrapAsync.js");
 const ExpressError=require("../util/ExpressError.js");
 const {listingSchema,reviewSchema}=require("../schema.js");
 const Listing=require("../modules/listing.js");
+const {isLoggedIn}=require("../middleware.js");
 
 
 
@@ -15,7 +16,9 @@ const listingValidate=(req,res,next)=>{
     const {error}=listingSchema.validate(req.body);
     if(error){
         let errMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(402,errMsg);
+        throw new ExpressError(402,errMsg
+
+        );
     }else{
         next();
     }
@@ -35,14 +38,18 @@ router.get("/",wrapAsync(async(req,res)=>{
 
 
 //create route
-router.get("/new",wrapAsync(async(req,res)=>{
+router.get("/new",isLoggedIn,wrapAsync(async(req,res)=>{
     res.render("listings/new");
 }))
 
 //edit route(to show)
-router.get("/:id/edit",wrapAsync(async(req,res)=>{
+router.get("/:id/edit",isLoggedIn,wrapAsync(async(req,res)=>{
     const {id}=req.params;
     const listing=await Listing.findById(id);
+    if(!listing){
+       req.flash("error", "Listing not exist!");
+       return res.redirect("/listings") ;
+    }
     res.render("listings/edit",{listing});
 }))
 
@@ -50,23 +57,28 @@ router.get("/:id/edit",wrapAsync(async(req,res)=>{
 router.get("/:id",wrapAsync(async(req,res)=>{
     const {id}=req.params;
     const listing=await Listing.findById(id).populate("review");
+     if(!listing){
+       req.flash("error", "Listing not exist!");
+       return res.redirect("/listings") ;
+    }
      if (listing.price != null) {
     listing.price = listing.price.toLocaleString('en-IN');
   } else {
     listing.price = 'N/A';
   }
-    
+   
     
     res.render("listings/show",{listing});
 }))
 //update listing(after editing)
-router.put("/:id",wrapAsync(async(req,res)=>{
+router.put("/:id",isLoggedIn,wrapAsync(async(req,res)=>{
     const {id}=req.params;
     const newListing=await Listing.findByIdAndUpdate(id,req.body.listing);
+    req.flash("success","Listing edited successfully ");
     res.redirect("/listings");
 
 }))
-router.delete("/:id",wrapAsync(async(req,res)=>{
+router.delete("/:id",isLoggedIn,wrapAsync(async(req,res)=>{
     const {id}=req.params;
     const newListing=await Listing.findByIdAndDelete(id);
     req.flash("success", "Listing deleted successfully!");
@@ -75,7 +87,7 @@ router.delete("/:id",wrapAsync(async(req,res)=>{
 
 }))
 //new listing
-router.post("/",wrapAsync(async(req,res,next)=>{
+router.post("/",isLoggedIn,wrapAsync(async(req,res,next)=>{
     console.log("BODY RECEIVED:", req.body);
     if(!req.body.listing){
         throw new ExpressError(400,"bad request");  //hopscotch-postreq-/listings ;similar thing can be dodne at update listing where req.body used
@@ -91,6 +103,16 @@ router.post("/",wrapAsync(async(req,res,next)=>{
    res.redirect("/listings");
 
 }))
+//logout
+router.get("/logout",(req,res,next)=>{
+    req.logout((err)=>{
+        if(err){
+            return next(err);
+        }
+        req.flash("success","you are logged out");
+        res.redirect("/listings");
+    })
+})
 
 
 

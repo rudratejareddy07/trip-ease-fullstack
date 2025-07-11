@@ -17,10 +17,28 @@
         </li>
         <li>
           <button id="voice-btn" class="btn btn-dark">
-  🎤 Voice
-</button>
+            Voice
+          </button>
         </li>
         
+      </ul>
+    </div>
+
+    <div class="collapse navbar-collapse " id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <%if(!currUser) {%>
+        <li class="nav-item">
+          <a class="nav-link"  href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/signup">Sign up</a>
+        </li>
+        <% } %>
+         <%if(currUser) {%>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        <% } %>
       </ul>
     </div>
   </div>
