@@ -22,4 +22,10 @@
       <% } %>
     </div>
   </div>
+ <script>
+  const listings = <%- JSON.stringify(allListings.map(l => ({
+    title: l.title.toLowerCase(),
+    url: "/listings/" + l._id
+  }))) %>;
+</script>
 </body>
