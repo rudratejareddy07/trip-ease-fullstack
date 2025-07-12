@@ -30,10 +30,23 @@ router.post("/signup",async(req,res)=>{
 router.get("/login",(req,res)=>{
     res.render("users/login.ejs");
 })
-router.post("/login",saveRedirectUrl,passport.authenticate("local",{
+
+router.post("/login",(req, res, next) => {
+        console.log("Login attempt for:", req.body.username);
+        next();
+    },saveRedirectUrl,passport.authenticate("local",{
     failureRedirect:"/login",
     failureFlash:true,
+    if(error){
+        console.log(error);
+    }
     }),
+    
+    (req, res, next) => {
+    console.log("Login hit. User is:", req.user); 
+    next();
+    },
+   
     async(req,res)=>{
         const redirectUrl = res.locals.redirectUrl || "/listings";
         req.flash("success","Welcome back to Trip-ease");

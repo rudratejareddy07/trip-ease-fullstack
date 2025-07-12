@@ -16,7 +16,8 @@ const User = require("./modules/user.js");
 const listingRoutes = require("./routes/listing.js");
 const reviewRoutes = require("./routes/review.js");
 const userRoutes = require("./routes/user.js");
-const {isLoggedIn}=require("./middleware.js");
+const { isLoggedIn } = require("./middleware.js");
+
 // Connect to MongoDB
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 async function main() {
@@ -40,7 +41,7 @@ app.use(methodOverride("_method"));
 app.use(session({
   secret: "mysupersecretstring",
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -51,7 +52,7 @@ app.use(session({
 // Flash setup
 app.use(flash());
 
-// Passport setup (after session)
+// Passport setup (after session) - FIXED: Removed duplicate lines
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -60,9 +61,10 @@ passport.deserializeUser(User.deserializeUser());
 
 // Set flash messages globally
 app.use((req, res, next) => {
+  console.log("res.locals.currUser being set to:", req.user);
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.currUser=req.user;
+  res.locals.currUser = req.user;
   next();
 });
 
@@ -81,14 +83,14 @@ app.get("/", (req, res) => {
   res.send("I am root");
 });
 
-app.get("/demouser",async(req,res)=>{
-  let fakeUser=new User({
-    email:"rudra@gmail.com",
-    username:"rudra"
-  })
-  let registeredUser=await User.register(fakeUser,"helloworld");
-  res.send(registeredUser);
-})
+app.get("/check", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.send(" Logged in as: " + req.user.username);
+  } else {
+    res.send(" Not logged in");
+  }
+});
+
 // Mount routes
 app.use("/", userRoutes);
 app.use("/listings", listingRoutes);

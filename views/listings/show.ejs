@@ -5,19 +5,21 @@
     <div class="showcard">
         <img src="<%=listing.image %>" class="card-img-top" alt="...">
         <div class="card-body">
-            
+                <p>Own by <b><i><%=listing.owner.username %></i></b></p>
                 <p><%=listing.description %></p>
                 <p>&#8377;<%=listing.price %></p>
                 <p><%=listing.location %></p>
                 <p><%=listing.country %></p>
             </ul>
             
+
             <div class="d-flex gap-2 flex-wrap btns">
                 <a href="/listings/<%=listing._id%>/edit" class="btn btn-primary">Edit Listing</a>
                 <form method="post" action="/listings/<%=listing._id%>?_method=DELETE" style="display: inline-block;">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
+           
         </div>
     </div>
     <hr>
@@ -45,6 +47,7 @@
             <% for(review of listing.review ) { %>
             <div class="card newReview col-6" style="width: 18rem;">
                 <div class="card-body">
+
                     <h5 class="card-title">Joe</h5>
                     <p class="card-text"> <%= review.comment %></p>
                     <p class="card-text"> <%= review.rating %> stars</p>
