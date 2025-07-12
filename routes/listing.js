@@ -46,11 +46,19 @@ router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(async(req,res)=>{
 //show route
 router.get("/:id",wrapAsync(async(req,res)=>{
     const {id}=req.params;
-    const listing=await Listing.findById(id).populate("review").populate("owner");
+   const listing = await Listing.findById(id).populate({
+    path: "review",
+    populate: { path: "author" }
+  })
+  .populate("owner");
+
      if(!listing){
        req.flash("error", "Listing not exist!");
        return res.redirect("/listings") ;
     }
+    listing.review = listing.review.filter(
+    (r) => r !== null && r !== undefined && r.author !== null && r.author !== undefined
+  );
      if (listing.price != null) {
     listing.price = listing.price.toLocaleString('en-IN');
   } else {

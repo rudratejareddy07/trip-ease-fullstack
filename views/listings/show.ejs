@@ -24,8 +24,9 @@
     </div>
     <hr>
     <div>
+        <% if(currUser) {%>
         <h4>Leave a review</h4>
-        <form method="POST" action="/listings/<%=listing.id%>/reviews" novalidate class="needs-validation" >
+        <form method="POST" action="/listings/<%=listing._id%>/reviews" novalidate class="needs-validation" >
         <div>
             
             <label for="rating" class="form-label">Rating</label>
@@ -38,9 +39,10 @@
         </div class="text-end mt-2">
        <br>
                 <button type="submit" class="btn btn-outline-secondary ">Submit</button>
-         
+          <hr>
         </form>
-        <hr>
+        <% } %>
+       
         <h4>All reviews</h4>
         <ul>
             <div class="row">
@@ -48,13 +50,15 @@
             <div class="card newReview col-6" style="width: 18rem;">
                 <div class="card-body">
 
-                    <h5 class="card-title">Joe</h5>
+                    <h5 class="card-title">@<%= review.author.username %></h5>
                     <p class="card-text"> <%= review.comment %></p>
                     <p class="card-text"> <%= review.rating %> stars</p>
                 </div>
+                <% if(currUser) {%>
                 <form method="POST" action="/listings/<%=listing._id %>/reviews/<%=review._id %>?_method=DELETE">
                     <button class="btn btn-sm btn-dark " style="margin-bottom: 1rem; margin-left: 1rem;">Delete</button>
                 </form>
+                <% } %>
             </div>
             <% } %>
             </div>

@@ -36,10 +36,7 @@ router.post("/login",(req, res, next) => {
         next();
     },saveRedirectUrl,passport.authenticate("local",{
     failureRedirect:"/login",
-    failureFlash:true,
-    if(error){
-        console.log(error);
-    }
+    failureFlash:true
     }),
     
     (req, res, next) => {
@@ -50,7 +47,9 @@ router.post("/login",(req, res, next) => {
     async(req,res)=>{
         const redirectUrl = res.locals.redirectUrl || "/listings";
         req.flash("success","Welcome back to Trip-ease");
+        console.log(redirectUrl);
         res.redirect(redirectUrl);
+        
 })
 router.get("/logout",(req,res,next)=>{
     req.logout((err)=>{
