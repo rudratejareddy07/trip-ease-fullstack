@@ -15,7 +15,18 @@ const listingSchema=new Schema({
     review:[{ type: Schema.Types.ObjectId, 
         ref: 'Review' }],
     owner:{ type: Schema.Types.ObjectId, 
-        ref: 'User' }
+        ref: 'User' },
+    coordinates: {
+  type: {
+    type: String,
+    enum: ['Point'],
+    default: 'Point'
+  },
+  coordinates: {
+    type: [Number], // [longitude, latitude]
+    default: [0, 0]
+  }
+}
 })
 
 listingSchema.post('findOneAndDelete', async function (listing) {
@@ -24,6 +35,6 @@ listingSchema.post('findOneAndDelete', async function (listing) {
     console.log('Deleted associated reviews');
   }
 });
-
+listingSchema.index({ coordinates: '2dsphere' });
 const Listing=mongoose.model("Listing",listingSchema);
 module.exports=Listing;

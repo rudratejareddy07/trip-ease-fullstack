@@ -22,6 +22,25 @@
            
         </div>
     </div>
+   
+   
+    <div class="map-container mt-4">
+    <h4>Location</h4>
+    <div
+        id="map"
+        class="rounded border"
+        style="height: 400px; width: 100%;"
+        data-lat="<%= lat %>"
+        data-lng="<%= lng %>"
+        data-title="<%= listing.title %>"
+        data-location="<%= listing.location %>"
+    ></div>
+
+    <!-- Optional: Remove controls if not implemented in external JS -->
+
+</div>
+
+   
     <hr>
     <div>
         <% if(currUser) {%>

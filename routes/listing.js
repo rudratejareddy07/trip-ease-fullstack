@@ -9,7 +9,8 @@ const Listing=require("../modules/listing.js");
 const {isLoggedIn,isOwner,listingValidate}=require("../middleware.js");
 const multer  = require('multer')
 const {storage}=require("../cloudConfig.js");
-const upload = multer({ storage })
+const upload = multer({ storage });
+const geocode=require("../util/geocode");
 
 
 //all listings
@@ -61,10 +62,11 @@ router.get("/:id",wrapAsync(async(req,res)=>{
     listing.price = listing.price.toLocaleString('en-IN');
   } else {
     listing.price = 'N/A';
-  }
+  } 
+  const lat = listing.coordinates?.coordinates[1];
+const lng = listing.coordinates?.coordinates[0];
    
-    
-    res.render("listings/show",{listing});
+    res.render("listings/show",{listing,lat, lng});
 }))
 //update listing(after editing)
 router.put("/:id",isLoggedIn,isOwner,upload.single("listing[image]"),listingValidate,wrapAsync(async(req,res)=>{
@@ -105,6 +107,11 @@ router.post("/",isLoggedIn, upload.single("listing[image]"),listingValidate,wrap
     const newListing=new Listing({
         title,description,price,country,location
     })
+    const geoData = await geocode(newListing.location);
+if (geoData) {
+  newListing.coordinates = geoData;
+  console.log(" Coordinates set:", geoData);
+}
     newListing.owner=req.user._id; //req.user._id from passport
     if (req.file) {
       const url = req.file.path;
