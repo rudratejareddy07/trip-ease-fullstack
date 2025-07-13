@@ -4,32 +4,16 @@ const path=require("path");
 const User=require("../modules/user.js")
 const passport=require("passport")
 const{saveRedirectUrl}=require("../middleware.js");
-router.get("/signup",(req,res)=>{
-    res.render("users/signup.ejs")
+const userController=require("../controllers/user.js");
+const wrapAsync = require("../util/wrapAsync.js");
+const ExpressError = require("../util/ExpressError.js");
 
-})
-router.post("/signup",async(req,res)=>{
-    try{let {username,email,password}=req.body;
-    const newUser=new User({email,username});
-    const regUser=await User.register(newUser,password);
-    console.log(regUser);
-    req.login(regUser,(err)=>{
-        if(err){
-            return next(err);
-        }
-        req.flash("success","Welcome to Trip-Ease!");
-        res.redirect("/listings");
-    })
-    
-    }catch(e){
-        req.flash("error",e.message);
-        res.redirect("/signup");
-    }
 
-})
-router.get("/login",(req,res)=>{
-    res.render("users/login.ejs");
-})
+router.get("/signup",userController.renderSignupForm);
+
+router.post("/signup",wrapAsync(userController.signup))
+
+router.get("/login",userController.renderLoginForm)
 
 router.post("/login",(req, res, next) => {
         console.log("Login attempt for:", req.body.username);
@@ -38,26 +22,7 @@ router.post("/login",(req, res, next) => {
     failureRedirect:"/login",
     failureFlash:true
     }),
-    
-    (req, res, next) => {
-    console.log("Login hit. User is:", req.user); 
-    next();
-    },
-   
-    async(req,res)=>{
-        const redirectUrl = res.locals.redirectUrl || "/listings";
-        req.flash("success","Welcome back to Trip-ease");
-        console.log(redirectUrl);
-        res.redirect(redirectUrl);
-        
-})
-router.get("/logout",(req,res,next)=>{
-    req.logout((err)=>{
-        if(err){
-            return next(err);
-        }
-        req.flash("success","you are logged out");
-        res.redirect("/listings");
-    })
-})
+    userController.login);
+
+router.get("/logout",userController.logout);
 module.exports=router;

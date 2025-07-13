@@ -7,11 +7,8 @@ const ExpressError = require("../util/ExpressError");
 const {listingSchema,reviewSchema}=require("../schema.js");
 const Listing=require("../modules/listing.js");
 const {isLoggedIn,isOwner,listingValidate}=require("../middleware.js");
-
-
-
-
-
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 
 //all listings
@@ -87,7 +84,7 @@ router.delete("/:id",isLoggedIn,isOwner,wrapAsync(async(req,res)=>{
 
 }))
 //new listing
-router.post("/",isLoggedIn,listingValidate,wrapAsync(async(req,res,next)=>{
+router.post("/",isLoggedIn,listingValidate, upload.single('listing[image]'),wrapAsync(async(req,res,next)=>{
     console.log("BODY RECEIVED:", req.body);
     if(!req.body.listing){
         throw new ExpressError(400,"bad request");  //hopscotch-postreq-/listings ;similar thing can be dodne at update listing where req.body used
@@ -104,9 +101,6 @@ router.post("/",isLoggedIn,listingValidate,wrapAsync(async(req,res,next)=>{
    res.redirect("/listings");
 
 }))
-
-
-
 
 module.exports= router
 

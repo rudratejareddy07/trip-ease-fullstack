@@ -16,7 +16,7 @@ const User = require("./modules/user.js");
 const listingRoutes = require("./routes/listing.js");
 const reviewRoutes = require("./routes/review.js");
 const userRoutes = require("./routes/user.js");
-const { isLoggedIn } = require("./middleware.js");
+
 
 // Connect to MongoDB
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -96,6 +96,10 @@ app.use("/", userRoutes);
 app.use("/listings", listingRoutes);
 app.use("/listings/:id/reviews", reviewRoutes);
 
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
 // 404 handler
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page not found..."));
