@@ -8,7 +8,8 @@ const {listingSchema,reviewSchema}=require("../schema.js");
 const Listing=require("../modules/listing.js");
 const {isLoggedIn,isOwner,listingValidate}=require("../middleware.js");
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const {storage}=require("../cloudConfig.js");
+const upload = multer({ storage })
 
 
 //all listings
@@ -66,10 +67,17 @@ router.get("/:id",wrapAsync(async(req,res)=>{
     res.render("listings/show",{listing});
 }))
 //update listing(after editing)
-router.put("/:id",isLoggedIn,isOwner,listingValidate,wrapAsync(async(req,res)=>{
+router.put("/:id",isLoggedIn,isOwner,upload.single("listing[image]"),listingValidate,wrapAsync(async(req,res)=>{
     const {id}=req.params;
+    const listing=await Listing.findByIdAndUpdate(id,req.body.listing);
+    if (typeof req.file !== 'undefined') {
+      const url = req.file.path;
+      const filename = req.file.filename;
+      listing.image = { url, filename };
+      console.log("✅ Image updated:", url, filename);
+      await listing.save();
+    }
     
-    const newListing=await Listing.findByIdAndUpdate(id,req.body.listing);
     req.flash("success","Listing edited successfully ");
     res.redirect(`/listings/${id}`);
 
@@ -84,17 +92,26 @@ router.delete("/:id",isLoggedIn,isOwner,wrapAsync(async(req,res)=>{
 
 }))
 //new listing
-router.post("/",isLoggedIn,listingValidate, upload.single('listing[image]'),wrapAsync(async(req,res,next)=>{
-    console.log("BODY RECEIVED:", req.body);
+router.post("/",isLoggedIn, upload.single("listing[image]"),listingValidate,wrapAsync(async(req,res,next)=>{
+    console.log("📦 Received body:", req.body);
+    console.log("📸 Received file:", req.file);
+    
+    
     if(!req.body.listing){
         throw new ExpressError(400,"bad request");  //hopscotch-postreq-/listings ;similar thing can be dodne at update listing where req.body used
     }
     
-    const {title,description,image,price,country,location}=req.body.listing;
+    const {title,description,price,country,location}=req.body.listing;
     const newListing=new Listing({
-        title,description,image,price,country,location
+        title,description,price,country,location
     })
     newListing.owner=req.user._id; //req.user._id from passport
+    if (req.file) {
+      const url = req.file.path;
+      const filename = req.file.filename;
+      newListing.image = { url, filename };
+      console.log("✅ Image saved:", url, filename);
+    }
     console.log(newListing);
     await newListing.save();
     req.flash("success","new listing created");

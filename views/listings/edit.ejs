@@ -1,7 +1,7 @@
 <% layout("/layouts/boilerplate.ejs") %>
 <div class="row ">
 <body>
-    <form method="post" action="/listings/<%=listing._id%>?_method=PUT">
+    <form method="post" action="/listings/<%=listing._id%>?_method=PUT" class="needs-validation" enctype="multipart/form-data">
         <div class="col-8 offset-2" >
             <br><br>
         <div class="">
@@ -12,10 +12,13 @@
             <label for="description" class="form-label">Description</label> 
         <textarea name="listing[description]" rows="2" cols="30" class="form-control" ><%= listing.description %>  </textarea>
         </div>
-        
+        <div>
+            <p>Original image</p>
+            <img src="<%=listing.image.url %>" class="editImg" alt="...">
+        </div>
         <div class="">
             <label for="image" class="form-label">Image:</label> 
-        <input name="listing[image]" value="<%=listing.image%> " class="form-control">
+        <input name="listing[image]" type="file" value="<%=listing.image%> " class="form-control" >
         </div>
         <div class="row">
         <div class="col-md-4">

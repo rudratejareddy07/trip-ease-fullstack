@@ -1,3 +1,9 @@
+require('dotenv').config();
+if(process.env.NODE_ENV != "production"){
+
+}
+console.log(process.env.SECRET)
+
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -107,6 +113,7 @@ app.use((req, res, next) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
+  console.error("🔥 ERROR STACK:", err.stack || err);
   const { statusCode = 500, message = "Something unknown error" } = err;
   res.status(statusCode).render("./listings/error.ejs", { statusCode, message });
 });
